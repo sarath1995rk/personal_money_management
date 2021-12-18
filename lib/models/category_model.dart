@@ -19,6 +19,11 @@ class CategoryModel extends HiveObject {
   final bool isDeleted;
 
   CategoryModel(this.name, this.type, this.isDeleted);
+
+  @override
+  String toString() {
+    return 'CategoryModel{name: $name, type: $type, isDeleted: $isDeleted}';
+  }
 }
 
 //flutter pub run build_runner build --delete-conflicting-outputs

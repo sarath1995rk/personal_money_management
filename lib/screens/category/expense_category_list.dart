@@ -7,7 +7,7 @@ class ExpenseCategoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
         padding: const EdgeInsets.all(10),
-        itemBuilder: (xtx, index) {
+        itemBuilder: (ctx, index) {
           return Card(
             child: ListTile(
               title: Text('Expense category $index'),
