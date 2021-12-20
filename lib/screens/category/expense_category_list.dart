@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:personal_money_management_app/dbFunctions/categoryDb.dart';
+import 'package:personal_money_management_app/models/category_model.dart';
 
 class ExpenseCategoryList extends StatelessWidget {
   const ExpenseCategoryList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        padding: const EdgeInsets.all(10),
-        itemBuilder: (ctx, index) {
-          return Card(
-            child: ListTile(
-              title: Text('Expense category $index'),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-                onPressed: () {},
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (ctx, index) {
-          return const SizedBox(
-            height: 10,
-          );
-        },
-        itemCount: 100);
+    return ValueListenableBuilder(
+        valueListenable: CategoryDb.instance.expenseCategoryListNotifier,
+        builder: (BuildContext ctx, List<CategoryModel> list, Widget? _) {
+          return ListView.separated(
+              padding: const EdgeInsets.all(10),
+              itemBuilder: (ctx, index) {
+                return Card(
+                  child: ListTile(
+                    title: Text(list[index].name),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      onPressed: () =>
+                          CategoryDb.instance.deleteCategory(list[index].key),
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (ctx, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              },
+              itemCount: list.length);
+        });
   }
 }

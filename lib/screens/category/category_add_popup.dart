@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_money_management_app/dbFunctions/categoryDb.dart';
 import 'package:personal_money_management_app/models/category_model.dart';
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
     ValueNotifier(CategoryType.income);
 
 Future<void> showCategoryAddPopup(BuildContext context) async {
+  final _controller = TextEditingController();
   showDialog(
       context: context,
       builder: (ctx) {
@@ -15,6 +17,7 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _controller,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(), hintText: 'Category name'),
               ),
@@ -30,7 +33,18 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(onPressed: () {}, child: const Text('Add')),
+              child: ElevatedButton(
+                  onPressed: () {
+                    final name = _controller.text;
+                    if (name.isEmpty) {
+                      return;
+                    }
+                    final type = selectedCategoryNotifier.value;
+                    CategoryModel val = CategoryModel(name, type, false);
+                    CategoryDb.instance.insertCategory(val);
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('Add')),
             )
           ],
         );

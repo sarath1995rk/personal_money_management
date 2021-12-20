@@ -13,12 +13,11 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    CategoryDb().getAllCategories().then((value) {
-      print('**** $value');
-    });
+    CategoryDb().refreshUI().then((value) {});
     super.initState();
   }
 
