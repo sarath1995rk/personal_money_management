@@ -3,6 +3,7 @@ import 'package:personal_money_management_app/custom_paint_test/custom_screen.da
 import 'package:personal_money_management_app/screens/category/category_add_popup.dart';
 import 'package:personal_money_management_app/screens/category/category_screen.dart';
 import 'package:personal_money_management_app/screens/home/widgets/bottomNavigationMoneyManagement.dart';
+import 'package:personal_money_management_app/screens/transactions/add_transaction_screen.dart';
 import 'package:personal_money_management_app/screens/transactions/transcation_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -30,6 +31,7 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (selectedIndexNotifier.value == 0) {
+            Navigator.of(context).pushNamed(AddTransactionScreen.routeName);
           } else {
             showCategoryAddPopup(context);
           }

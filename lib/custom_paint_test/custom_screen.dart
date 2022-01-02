@@ -17,12 +17,33 @@ class CustomScreen extends StatelessWidget {
             child: Container(
               width: size.width,
               height: 80,
-              color: Colors.white,
               child: Stack(
                 children: [
                   CustomPaint(
                     size: Size(size.width, 80),
                     painter: BNBCustomPainter(),
+                  ),
+                  Center(
+                    heightFactor: .6,
+                    child: FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.orange,
+                      child: const Icon(Icons.shopping_basket),
+                    ),
+                  ),
+                  Container(
+                    width: size.width,
+                    height: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Icon(Icons.home),
+                        const Icon(Icons.restaurant_menu),
+                        const SizedBox(),
+                        const Icon(Icons.bookmark),
+                        const Icon(Icons.notifications)
+                      ],
+                    ),
                   )
                 ],
               ),
