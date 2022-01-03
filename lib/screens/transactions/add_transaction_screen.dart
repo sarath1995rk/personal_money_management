@@ -12,9 +12,15 @@ class AddTransactionScreen extends StatefulWidget {
 
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   DateTime? _selectedDate;
-  CategoryType _selectedCategoryType = CategoryType.income;
+  late CategoryType _selectedCategoryType;
   CategoryModel? _selectedCategoryModel;
-  String? selectedCategoryText;
+  String? _categoryId;
+
+  @override
+  void initState() {
+    _selectedCategoryType = CategoryType.income;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +69,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       groupValue: _selectedCategoryType,
                       onChanged: (newVal) {
                         setState(() {
-                          _selectedCategoryType = newVal!;
+                          _categoryId = null;
+                          _selectedCategoryType = CategoryType.income;
                         });
                       },
                     ),
@@ -77,7 +84,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       groupValue: _selectedCategoryType,
                       onChanged: (newVal) {
                         setState(() {
-                          _selectedCategoryType = newVal!;
+                          _categoryId = null;
+                          _selectedCategoryType = CategoryType.expense;
                         });
                       },
                     ),
@@ -87,26 +95,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ],
             ),
             DropdownButton(
-              value: _selectedCategoryModel,
+              value: _categoryId,
               hint: Text('Select Category'),
-              items: _selectedCategoryType == CategoryType.income
-                  ? CategoryDb.instance.incomeCategoryListNotifier.value
-                      .map((e) {
-                      return DropdownMenuItem(
-                        child: Text(e.name),
-                        value: e,
-                      );
-                    }).toList()
-                  : CategoryDb.instance.expenseCategoryListNotifier.value
-                      .map((e) {
-                      return DropdownMenuItem(
-                        child: Text(e.name),
-                        value: e.key,
-                      );
-                    }).toList(),
+              items: (_selectedCategoryType == CategoryType.income
+                      ? CategoryDb.instance.incomeCategoryListNotifier
+                      : CategoryDb.instance.expenseCategoryListNotifier)
+                  .value
+                  .map((e) {
+                return DropdownMenuItem(
+                  child: Text(e.name),
+                  value: e.key.toString(),
+                );
+              }).toList(),
               onChanged: (val) {
                 setState(() {
-                  _selectedCategoryModel = val as CategoryModel?;
+                  print(val.toString());
+                  _categoryId = val.toString();
                 });
               },
             ),
