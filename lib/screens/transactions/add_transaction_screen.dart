@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:personal_money_management_app/dbFunctions/categoryDb.dart';
+import 'package:personal_money_management_app/dbFunctions/transactionDb.dart';
 import 'package:personal_money_management_app/models/category_model.dart';
+import 'package:personal_money_management_app/models/transaction_model.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   static const routeName = '/add_transaction_screen';
@@ -15,11 +17,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   late CategoryType _selectedCategoryType;
   CategoryModel? _selectedCategoryModel;
   String? _categoryId;
+  final _purposeController = TextEditingController();
+  final _amountController = TextEditingController();
 
   @override
   void initState() {
     _selectedCategoryType = CategoryType.income;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _purposeController.clear();
+    _amountController.clear();
+    super.dispose();
   }
 
   @override
@@ -34,9 +45,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
+              controller: _purposeController,
               decoration: const InputDecoration(hintText: 'Purpose'),
             ),
             TextFormField(
+              controller: _amountController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(hintText: 'Amount'),
             ),
@@ -103,6 +116,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   .value
                   .map((e) {
                 return DropdownMenuItem(
+                  onTap: () {
+                    _selectedCategoryModel = e;
+                  },
                   child: Text(e.name),
                   value: e.key.toString(),
                 );
@@ -116,7 +132,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
             Center(
               child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: _addTransaction,
                   icon: const Icon(Icons.check),
                   label: const Text('Submit')),
             )
@@ -124,5 +140,25 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _addTransaction() async {
+    final purposeText = _purposeController.text;
+    final amountText = _amountController.text;
+    if (purposeText.isEmpty || amountText.isEmpty) {
+      return;
+    }
+    if (_categoryId == null || _selectedDate == null) {
+      return;
+    }
+    final parsedAmount = double.tryParse(amountText);
+    if (parsedAmount == null || _selectedCategoryModel == null) {
+      return;
+    }
+
+    final _model = TransactionModel(purposeText, parsedAmount, _selectedDate!,
+        _selectedCategoryType, _selectedCategoryModel!);
+
+    TransactionDb.instance.addTransaction(_model);
   }
 }
