@@ -8,6 +8,8 @@ abstract class TransactionDbFunctions {
   Future<void> addTransaction(TransactionModel model);
 
   Future<List<TransactionModel>> getAllTransactions();
+
+  Future<void> deleteTransaction(int id);
 }
 
 class TransactionDb implements TransactionDbFunctions {
@@ -46,5 +48,13 @@ class TransactionDb implements TransactionDbFunctions {
     //   transactionListNotifier.value.add(trans);
     // });
     transactionListNotifier.notifyListeners();
+  }
+
+  @override
+  Future<void> deleteTransaction(int id) async {
+    final _transactionDb =
+        await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    await _transactionDb.delete(id);
+    refreshUITransaction();
   }
 }

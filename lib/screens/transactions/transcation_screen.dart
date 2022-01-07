@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:personal_money_management_app/dbFunctions/categoryDb.dart';
 import 'package:personal_money_management_app/dbFunctions/transactionDb.dart';
 import 'package:personal_money_management_app/models/category_model.dart';
@@ -20,20 +21,36 @@ class TransactionScreen extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               itemBuilder: (xtx, index) {
                 final val = newList[index];
-                return Card(
-                  elevation: 0,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: val.type == CategoryType.income
-                            ? Colors.green
-                            : Colors.red,
-                        child: Text(
-                          parseDate(val.date),
-                          textAlign: TextAlign.center,
-                        )),
-                    title: Text('Rs ${val.amount}'),
-                    subtitle: Text(val.category.name),
+                return Slidable(
+                  key: Key(val.key.toString()),
+                  startActionPane: ActionPane(
+                    motion: ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (_) {
+                          TransactionDb.instance.deleteTransaction(val.key);
+                        },
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        label: 'Delete',
+                      )
+                    ],
+                  ),
+                  child: Card(
+                    elevation: 0,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                          radius: 50,
+                          backgroundColor: val.type == CategoryType.income
+                              ? Colors.green
+                              : Colors.red,
+                          child: Text(
+                            parseDate(val.date),
+                            textAlign: TextAlign.center,
+                          )),
+                      title: Text('Rs ${val.amount}'),
+                      subtitle: Text(val.category.name),
+                    ),
                   ),
                 );
               },
