@@ -132,7 +132,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
             Center(
               child: ElevatedButton.icon(
-                  onPressed: _addTransaction,
+                  onPressed: () => _addTransaction(),
                   icon: const Icon(Icons.check),
                   label: const Text('Submit')),
             )
@@ -159,6 +159,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final _model = TransactionModel(purposeText, parsedAmount, _selectedDate!,
         _selectedCategoryType, _selectedCategoryModel!);
 
-    TransactionDb.instance.addTransaction(_model);
+    await TransactionDb.instance.addTransaction(_model);
+    Navigator.of(context).pop();
   }
 }

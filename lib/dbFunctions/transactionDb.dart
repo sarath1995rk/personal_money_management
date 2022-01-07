@@ -26,6 +26,7 @@ class TransactionDb implements TransactionDbFunctions {
     final _transactionDb =
         await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     await _transactionDb.add(model);
+    refreshUITransaction();
   }
 
   @override
@@ -37,10 +38,13 @@ class TransactionDb implements TransactionDbFunctions {
 
   Future<void> refreshUITransaction() async {
     final _allTransactions = await getAllTransactions();
+    _allTransactions.sort((first, second) => second.date.compareTo(first.date));
     transactionListNotifier.value.clear();
-    await Future.forEach(_allTransactions, (TransactionModel trans) {
-      transactionListNotifier.value.add(trans);
-    });
+    transactionListNotifier.value.addAll(_allTransactions);
+
+    // await Future.forEach(_allTransactions, (TransactionModel trans) {
+    //   transactionListNotifier.value.add(trans);
+    // });
     transactionListNotifier.notifyListeners();
   }
 }
